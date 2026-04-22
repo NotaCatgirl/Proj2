@@ -155,3 +155,7 @@ src/generated/
 
 ### Distribution ###
 distributions
+
+### Database ###
+*.db
+.idea/
