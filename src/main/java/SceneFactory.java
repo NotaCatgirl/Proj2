@@ -1,6 +1,12 @@
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SceneFactory {
@@ -14,6 +20,7 @@ public class SceneFactory {
     public Scene createScene(SceneType type) {
         return switch (type) {
             case LOGIN -> buildLoginScene();
+            case SIGNUP -> buildSignUpScene();
             case REGISTER -> buildRegisterScene();
             case PRODUCT_BROWSE -> buildProductScene();
             case CART -> buildCartScene();
@@ -41,7 +48,47 @@ public class SceneFactory {
 
 
     private Scene buildLoginScene() {
-        return placeholder("Login Scene (Alexis)");
+        Label titlelabel = new Label("Login");
+
+        Label userNameLabel = new Label("Username: ");
+        TextField userNameInput = new TextField();
+        userNameInput.setPromptText("Enter Username");
+
+        Label passwordLabel = new Label("Password: ");
+        PasswordField passWordInput = new PasswordField();
+        passWordInput.setPromptText("Enter Password");
+
+        Button loginButton = new Button("Login");
+        Button signupButton = new Button("Sign Up");
+
+        loginButton.setOnAction(e -> {
+            String username = userNameInput.getText();
+            String password = passWordInput.getText();
+
+            if (username.equals("joe") && password.equals("123")){
+                switchScene(SceneType.ADMIN);
+            } else if (username.equals("user") && password.equals("123")){
+                switchScene(SceneType.PRODUCT_BROWSE);
+            } else {
+                System.out.println("error");
+            }
+        });
+
+        signupButton.setOnAction(e ->{
+            switchScene(SceneType.SIGNUP);
+        });
+
+        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,loginButton,signupButton);
+        vbox1.setPadding(new Insets(30));
+        vbox1.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(vbox1,350,700);
+
+        return scene;
+//        return placeholder("Login Scene (Alexis)");
+    }
+
+    private Scene buildSignUpScene(){
+        return placeholder("Sign up scene");
     }
 
     private Scene buildProductScene() {
