@@ -1,9 +1,6 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DatabaseManager {
 
@@ -50,4 +47,25 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
+
+    public static String validLogin(String user, String password){
+        String query = "SELECT role FROM users WHERE username = ? AND password = ?";
+        try(Connection con = getConnection();
+            PreparedStatement ps = con.prepareStatement(query)){
+            ps.setString(1,user);
+            ps.setString(2,password);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getString("role");
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

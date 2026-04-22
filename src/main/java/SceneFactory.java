@@ -1,3 +1,4 @@
+import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -61,16 +62,21 @@ public class SceneFactory {
         Button loginButton = new Button("Login");
         Button signupButton = new Button("Sign Up");
 
+        Label errorLabel = new Label();
+
         loginButton.setOnAction(e -> {
             String username = userNameInput.getText();
             String password = passWordInput.getText();
 
-            if (username.equals("joe") && password.equals("123")){
+            String role = DatabaseManager.validLogin(username, password);
+            if (role == null){
+                errorLabel.setText("Please Enter Valid Username or Password");
+            }else if (role.equalsIgnoreCase("admin")){
                 switchScene(SceneType.ADMIN);
-            } else if (username.equals("user") && password.equals("123")){
+            } else if (role.equalsIgnoreCase("user")){
                 switchScene(SceneType.PRODUCT_BROWSE);
             } else {
-                System.out.println("error");
+                errorLabel.setText("Please Enter Valid Username or Password");
             }
         });
 
@@ -78,7 +84,7 @@ public class SceneFactory {
             switchScene(SceneType.SIGNUP);
         });
 
-        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,loginButton,signupButton);
+        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,loginButton,signupButton,errorLabel);
         vbox1.setPadding(new Insets(30));
         vbox1.setAlignment(Pos.CENTER);
         Scene scene = new Scene(vbox1,350,700);
@@ -88,6 +94,7 @@ public class SceneFactory {
     }
 
     private Scene buildSignUpScene(){
+
         return placeholder("Sign up scene");
     }
 
