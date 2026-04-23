@@ -107,18 +107,26 @@ public class SceneFactory {
         Button signupButton = new Button("Sign Up");
         Button backButton = new Button("Back");
 
+        Label errorLabel = new Label();
+
         signupButton.setOnAction(e ->{
             String username = userNameInput.getText();
             String password = passWordInput.getText();
 
-            DatabaseManager.signUp(username,password);
+            Boolean exist = DatabaseManager.userExist(username);
+            if (exist){
+                errorLabel.setText("User Already exists\n  Please Try again");
+            } else {
+                DatabaseManager.signUp(username,password);
+                errorLabel.setText("Success!");
+            }
         });
 
         backButton.setOnAction(e ->{
             switchScene(SceneType.LOGIN);
         });
 
-        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,signupButton,backButton);
+        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,signupButton,backButton,errorLabel);
         vbox1.setPadding(new Insets(30));
         vbox1.setAlignment(Pos.CENTER);
         Scene scene = new Scene(vbox1,350,700);

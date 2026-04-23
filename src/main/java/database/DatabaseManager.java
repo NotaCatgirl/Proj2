@@ -80,4 +80,19 @@ public class DatabaseManager {
         }
     }
 
+    public static boolean userExist(String user){
+        String query = "SELECT * FROM users WHERE username = ?";
+        try (Connection con = getConnection();
+            PreparedStatement ps = con.prepareStatement(query)){
+            ps.setString(1,user);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
