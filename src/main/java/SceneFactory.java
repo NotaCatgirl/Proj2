@@ -94,8 +94,37 @@ public class SceneFactory {
     }
 
     private Scene buildSignUpScene(){
+        Label titlelabel = new Label("Sign Up");
 
-        return placeholder("Sign up scene");
+        Label userNameLabel = new Label("Username: ");
+        TextField userNameInput = new TextField();
+        userNameInput.setPromptText("Enter Username");
+
+        Label passwordLabel = new Label("Password: ");
+        PasswordField passWordInput = new PasswordField();
+        passWordInput.setPromptText("Enter Password");
+
+        Button signupButton = new Button("Sign Up");
+        Button backButton = new Button("Back");
+
+        signupButton.setOnAction(e ->{
+            String username = userNameInput.getText();
+            String password = passWordInput.getText();
+
+            DatabaseManager.signUp(username,password);
+        });
+
+        backButton.setOnAction(e ->{
+            switchScene(SceneType.LOGIN);
+        });
+
+        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,signupButton,backButton);
+        vbox1.setPadding(new Insets(30));
+        vbox1.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(vbox1,350,700);
+
+        return scene;
+//        return placeholder("Sign up scene");
     }
 
     private Scene buildProductScene() {

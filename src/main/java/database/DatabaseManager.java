@@ -67,5 +67,17 @@ public class DatabaseManager {
         return null;
     }
 
+    public static void signUp(String user, String password){
+        String query = "INSERT INTO users (username,password,role) VALUES (?,?,?)";
+        try (Connection con =getConnection();
+            PreparedStatement ps = con.prepareStatement(query)){
+            ps.setString(1,user);
+            ps.setString(2,password);
+            ps.setString(3, "user");
+            ps.executeUpdate () ;
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 
 }
