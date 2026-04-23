@@ -12,16 +12,10 @@ import javafx.stage.Stage;
 
 public class SceneFactory {
 
-    private final Stage stage;
-
-    public SceneFactory(Stage stage) {
-        this.stage = stage;
-    }
-
-    public Scene createScene(SceneType type) {
+    public static Scene createScene(SceneType type) {
         return switch (type) {
-            case LOGIN -> buildLoginScene();
-            case SIGNUP -> buildSignUpScene();
+            case LOGIN -> new LoginController().buildScene();
+            case SIGNUP -> new SignUpController().buildScene();
             case REGISTER -> buildRegisterScene();
             case PRODUCT_BROWSE -> buildProductScene();
             case CART -> buildCartScene();
@@ -31,15 +25,14 @@ public class SceneFactory {
     }
 
 
-
-    private Scene buildRegisterScene() {
+    private static Scene buildRegisterScene() {
         Label label = new Label("Register Scene (Noemhi)");
 
         StackPane root = new StackPane(label);
         return new Scene(root, 800, 600);
     }
 
-    private Scene buildOrderHistoryScene() {
+    private static Scene buildOrderHistoryScene() {
         Label label = new Label("Order History Scene (Noemhi)");
 
         StackPane root = new StackPane(label);
@@ -47,116 +40,28 @@ public class SceneFactory {
     }
 
 
-
-    private Scene buildLoginScene() {
-        Label titlelabel = new Label("Login");
-
-        Label userNameLabel = new Label("Username: ");
-        TextField userNameInput = new TextField();
-        userNameInput.setPromptText("Enter Username");
-
-        Label passwordLabel = new Label("Password: ");
-        PasswordField passWordInput = new PasswordField();
-        passWordInput.setPromptText("Enter Password");
-
-        Button loginButton = new Button("Login");
-        Button signupButton = new Button("Sign Up");
-
-        Label errorLabel = new Label();
-
-        loginButton.setOnAction(e -> {
-            String username = userNameInput.getText();
-            String password = passWordInput.getText();
-
-            String role = DatabaseManager.validLogin(username, password);
-            if (role == null){
-                errorLabel.setText("Please Enter Valid Username or Password");
-            }else if (role.equalsIgnoreCase("admin")){
-                switchScene(SceneType.ADMIN);
-            } else if (role.equalsIgnoreCase("user")){
-                switchScene(SceneType.PRODUCT_BROWSE);
-            } else {
-                errorLabel.setText("Please Enter Valid Username or Password");
-            }
-        });
-
-        signupButton.setOnAction(e ->{
-            switchScene(SceneType.SIGNUP);
-        });
-
-        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,loginButton,signupButton,errorLabel);
-        vbox1.setPadding(new Insets(30));
-        vbox1.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(vbox1,350,700);
-
-        return scene;
-//        return placeholder("Login Scene (Alexis)");
-    }
-
-    private Scene buildSignUpScene(){
-        Label titlelabel = new Label("Sign Up");
-
-        Label userNameLabel = new Label("Username: ");
-        TextField userNameInput = new TextField();
-        userNameInput.setPromptText("Enter Username");
-
-        Label passwordLabel = new Label("Password: ");
-        PasswordField passWordInput = new PasswordField();
-        passWordInput.setPromptText("Enter Password");
-
-        Button signupButton = new Button("Sign Up");
-        Button backButton = new Button("Back");
-
-        Label errorLabel = new Label();
-
-        signupButton.setOnAction(e ->{
-            String username = userNameInput.getText();
-            String password = passWordInput.getText();
-
-            Boolean exist = DatabaseManager.userExist(username);
-            if (exist){
-                errorLabel.setText("User Already exists\n  Please Try again");
-            } else {
-                DatabaseManager.signUp(username,password);
-                errorLabel.setText("Success!");
-            }
-        });
-
-        backButton.setOnAction(e ->{
-            switchScene(SceneType.LOGIN);
-        });
-
-        VBox vbox1 = new VBox(12,titlelabel,userNameLabel,userNameInput,passwordLabel,passWordInput,signupButton,backButton,errorLabel);
-        vbox1.setPadding(new Insets(30));
-        vbox1.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(vbox1,350,700);
-
-        return scene;
-//        return placeholder("Sign up scene");
-    }
-
-    private Scene buildProductScene() {
+    private static Scene buildProductScene() {
         return placeholder("Product Browse Scene");
     }
 
-    private Scene buildCartScene() {
+    private static Scene buildCartScene() {
         return placeholder("Cart Scene");
     }
 
-    private Scene buildAdminScene() {
+    private static Scene buildAdminScene() {
         return placeholder("Admin Scene");
     }
 
 
-    private Scene placeholder(String text) {
+    private static Scene placeholder(String text) {
         Label label = new Label(text + " - Coming Soon");
 
         StackPane root = new StackPane(label);
         return new Scene(root, 800, 600);
     }
 
-
-    public void switchScene(SceneType type) {
-        stage.setScene(createScene(type));
-    }
+//
+//    public static void switchScene(SceneType type) {
+//        stage.setScene(createScene(type));
+//    }
 }
