@@ -1,3 +1,5 @@
+package ui;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import database.DatabaseManager;
@@ -11,7 +13,6 @@ public class MainApp extends Application {
 
         primaryStage.setTitle("E-Commerce App");
 
-        // Start on register (your scene for now)
         primaryStage.setScene(factory.createScene(SceneType.REGISTER));
 
         primaryStage.show();

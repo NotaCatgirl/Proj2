@@ -1,3 +1,5 @@
+package ui;
+
 public enum SceneType {
     LOGIN,
     REGISTER,
