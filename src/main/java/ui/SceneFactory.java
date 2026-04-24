@@ -10,9 +10,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Session;
-import model.User;
-
 
 public class SceneFactory {
 
@@ -26,7 +23,6 @@ public class SceneFactory {
 
     public Scene createScene(SceneType type) {
         return switch (type) {
-            case LOGIN -> buildLoginScene();
             case REGISTER -> buildRegisterScene();
             case PRODUCT_BROWSE -> buildProductScene();
             case CART -> buildCartScene();
@@ -48,7 +44,6 @@ public class SceneFactory {
         Label messageLabel = new Label();
 
         Button registerButton = new Button("Register");
-        Button goToLoginButton = new Button("Go to Login");
 
         registerButton.setOnAction(e -> {
             String username = usernameField.getText().trim();
@@ -67,17 +62,13 @@ public class SceneFactory {
             boolean success = userDAO.registerUser(username, password, "user");
 
             if (success) {
-                messageLabel.setText("Registration successful! Please log in.");
+                messageLabel.setText("Registration successful!");
                 usernameField.clear();
                 passwordField.clear();
             } else {
                 messageLabel.setText("Registration failed.");
             }
         });
-
-        goToLoginButton.setOnAction(e ->
-                stage.setScene(createScene(SceneType.LOGIN))
-        );
 
         VBox root = new VBox(15);
         root.setPadding(new Insets(20));
@@ -87,73 +78,11 @@ public class SceneFactory {
                 usernameField,
                 passwordField,
                 registerButton,
-                goToLoginButton,
                 messageLabel
         );
 
         return new Scene(root, 800, 600);
     }
-
-
-    private Scene buildLoginScene() {
-            Label titleLabel = new Label("Login");
-            titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
-
-            TextField usernameField = new TextField();
-            usernameField.setPromptText("Enter username");
-
-            PasswordField passwordField = new PasswordField();
-            passwordField.setPromptText("Enter password");
-
-            Label messageLabel = new Label();
-
-            Button loginButton = new Button("Login");
-            Button goToRegisterButton = new Button("Go to Register");
-
-            loginButton.setOnAction(e -> {
-                String username = usernameField.getText().trim();
-                String password = passwordField.getText().trim();
-
-                if (username.isEmpty() || password.isEmpty()) {
-                    messageLabel.setText("Username and password cannot be empty.");
-                    return;
-                }
-
-                User user = userDAO.loginUser(username, password);
-
-                if (user != null) {
-                    Session.setCurrentUser(user);
-                    messageLabel.setText("Login successful!");
-
-                    if (user.getRole().equalsIgnoreCase("admin")) {
-                        stage.setScene(createScene(SceneType.ADMIN));
-                    } else {
-                        stage.setScene(createScene(SceneType.PRODUCT_BROWSE));
-                    }
-                } else {
-                    messageLabel.setText("Invalid username or password.");
-                }
-            });
-
-            goToRegisterButton.setOnAction(e ->
-                    stage.setScene(createScene(SceneType.REGISTER))
-            );
-
-            VBox root = new VBox(15);
-            root.setPadding(new Insets(20));
-            root.setAlignment(Pos.CENTER);
-            root.getChildren().addAll(
-                    titleLabel,
-                    usernameField,
-                    passwordField,
-                    loginButton,
-                    goToRegisterButton,
-                    messageLabel
-            );
-
-            return new Scene(root, 800, 600);
-        }
-
 
     private Scene buildProductScene() {
         Label label = new Label("Product Browse Scene");

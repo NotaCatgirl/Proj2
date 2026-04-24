@@ -1,7 +1,6 @@
 package ui;
 
 public enum SceneType {
-    LOGIN,
     REGISTER,
     PRODUCT_BROWSE,
     CART,
