@@ -7,12 +7,11 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         DatabaseManager.initializeDatabase();
-        SceneFactory factory = new SceneFactory(primaryStage);
+        SceneManager.init(primaryStage);
 
         primaryStage.setTitle("E-Commerce App");
-
         // Start on register (your scene for now)
-        primaryStage.setScene(factory.createScene(SceneType.REGISTER));
+       SceneManager.getInstance().navigateTo(SceneType.LOGIN);
 
         primaryStage.show();
     }
