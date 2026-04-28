@@ -5,6 +5,8 @@ import java.sql.*;
 public class DatabaseManager {
 
     private static final String DB_URL = "jdbc:sqlite:ecommerce.db";
+    public static String currentUser;
+
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
@@ -93,6 +95,14 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void setUser(String username){
+        currentUser = username;
+    }
+
+    public static String getCurrentUser(){
+        return currentUser;
     }
 
 }

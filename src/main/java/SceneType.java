@@ -1,7 +1,7 @@
 public enum SceneType {
     LOGIN,
     SIGNUP,
-    REGISTER,
+    MAIN_PAGE_USER,
     PRODUCT_BROWSE,
     CART,
     ORDER_HISTORY,

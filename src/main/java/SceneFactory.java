@@ -1,14 +1,6 @@
-import database.DatabaseManager;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class SceneFactory {
 
@@ -16,7 +8,7 @@ public class SceneFactory {
         return switch (type) {
             case LOGIN -> new LoginController().buildScene();
             case SIGNUP -> new SignUpController().buildScene();
-            case REGISTER -> buildRegisterScene();
+            case MAIN_PAGE_USER -> new MainPageUserController().buildScene();
             case PRODUCT_BROWSE -> buildProductScene();
             case CART -> buildCartScene();
             case ORDER_HISTORY -> buildOrderHistoryScene();
@@ -24,13 +16,6 @@ public class SceneFactory {
         };
     }
 
-
-    private static Scene buildRegisterScene() {
-        Label label = new Label("Register Scene (Noemhi)");
-
-        StackPane root = new StackPane(label);
-        return new Scene(root, 800, 600);
-    }
 
     private static Scene buildOrderHistoryScene() {
         Label label = new Label("Order History Scene (Noemhi)");
