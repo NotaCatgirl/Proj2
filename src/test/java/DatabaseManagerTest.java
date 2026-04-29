@@ -1,5 +1,5 @@
-package database;
 
+import database.DatabaseManager;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -117,5 +117,12 @@ public class DatabaseManagerTest {
         );
 
         return rs.next();
+    }
+
+    @Test
+    public void testLogin (){
+        DatabaseManager.signUp("rain","1234");
+        String role = DatabaseManager.validLogin("rain","1234");
+        assertEquals("user",role);
     }
 }
