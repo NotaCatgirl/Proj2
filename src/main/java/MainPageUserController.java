@@ -25,6 +25,11 @@ public class MainPageUserController {
                 + "-fx-background-color: white;" + "-fx-border-radius: 12;" + "-fx-min-width: 200;"
                 + "-fx-min-height: 80;" + "-fx-translate-y: -10;" + "-fx-font-size: 18");
 
+        Button logOut = new Button("Log out");
+        logOut.setStyle("-fx-border-color: black;" + "-fx-border-width: 2;"
+                + "-fx-background-color: white;" + "-fx-border-radius: 12;" + "-fx-min-width: 100;"
+                + "-fx-min-height: 40;" + "-fx-translate-y: -10;" + "-fx-font-size: 18");
+
 
         browseProducts.setOnAction(e -> {
             SceneManager.getInstance().navigateTo(SceneType.PRODUCT_BROWSE);
@@ -34,7 +39,12 @@ public class MainPageUserController {
             SceneManager.getInstance().navigateTo(SceneType.ORDER_HISTORY);
         });
 
-        VBox vbox1 = new VBox(12, titleLabel, browseProducts, orderHistory);
+        logOut.setOnAction(e -> {
+            DatabaseManager.setUser(null);
+            SceneManager.getInstance().navigateTo(SceneType.LOGIN);
+        });
+
+        VBox vbox1 = new VBox(12, titleLabel, browseProducts, orderHistory,logOut);
         vbox1.setPadding(new Insets(30));
         vbox1.setAlignment(Pos.CENTER);
         Scene scene = new Scene(vbox1, 350, 700);
