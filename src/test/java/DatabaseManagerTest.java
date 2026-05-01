@@ -120,9 +120,15 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testLogin (){
+    public void testValidLogin (){
         DatabaseManager.signUp("rain","1234");
         String role = DatabaseManager.validLogin("rain","1234");
         assertEquals("user",role);
+    }
+
+    @Test
+    public void testInvalidLogin(){
+        String role = DatabaseManager.validLogin("Fake","test");
+        assertEquals(null,role);
     }
 }
