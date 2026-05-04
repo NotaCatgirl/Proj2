@@ -105,6 +105,7 @@ public class DatabaseManagerTest {
             assertTrue(tableExists(stmt, "users"));
             assertTrue(tableExists(stmt, "products"));
             assertTrue(tableExists(stmt, "orders"));
+            assertTrue(tableExists(stmt, "cart_item"));
 
         } catch (Exception e) {
             fail("Table creation test failed: " + e.getMessage());
