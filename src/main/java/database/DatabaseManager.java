@@ -147,4 +147,61 @@ public class DatabaseManager {
         return users;
     }
 
+    public static List<String> getAllProducts() {
+        List<String> products = new ArrayList<>();
+
+        String sql = "SELECT product_id, name, price, stock FROM products ORDER BY product_id";
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                products.add(
+                        "ID: " + rs.getInt("product_id") +
+                                " | " + rs.getString("name") +
+                                " | $" + rs.getDouble("price") +
+                                " | Stock: " + rs.getInt("stock")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return products;
+    }
+
+    public static void addProduct(String name, String desc, double price, int stock) {
+        String sql = "INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, desc);
+            ps.setDouble(3, price);
+            ps.setInt(4, stock);
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteProduct(int productId) {
+        String sql = "DELETE FROM products WHERE product_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, productId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

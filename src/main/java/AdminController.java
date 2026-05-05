@@ -27,11 +27,12 @@ public class AdminController {
 
         Button viewOrdersBtn = new Button("View All Orders");
         Button manageUsersBtn = new Button("Manage Users");
-        Button addProductBtn = new Button("Add / Remove Products");
+        Button manageProductBtn = new Button("Add / Remove Products");
         Button logoutBtn = new Button("Logout");
 
         viewOrdersBtn.setOnAction(e -> showOrders());
         manageUsersBtn.setOnAction(e -> showUsers());
+        manageProductBtn.setOnAction(e -> showProducts());
 
         logoutBtn.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.LOGIN)
@@ -41,7 +42,7 @@ public class AdminController {
                 title,
                 viewOrdersBtn,
                 manageUsersBtn,
-                addProductBtn,
+                manageProductBtn,
                 logoutBtn
         );
     }
@@ -135,6 +136,75 @@ public class AdminController {
         } else {
             root.getChildren().setAll(title, searchField, searchBtn, usersList, backBtn);
         }
+    }
+
+    private void showProducts() {
+        Label title = new Label("Manage Products");
+
+        TextField nameField = new TextField();
+        nameField.setPromptText("Product Name");
+
+        TextField descField = new TextField();
+        descField.setPromptText("Description");
+
+        TextField priceField = new TextField();
+        priceField.setPromptText("Price");
+
+        TextField stockField = new TextField();
+        stockField.setPromptText("Stock");
+
+        Button addBtn = new Button("Add Product");
+        Button deleteBtn = new Button("Delete by ID");
+        Button backBtn = new Button("Back");
+
+        ListView<String> productList = new ListView<>();
+        Label messageLabel = new Label();
+
+        productList.getItems().addAll(DatabaseManager.getAllProducts());
+
+        addBtn.setOnAction(e -> {
+            try {
+                String name = nameField.getText();
+                String desc = descField.getText();
+                double price = Double.parseDouble(priceField.getText());
+                int stock = Integer.parseInt(stockField.getText());
+
+                DatabaseManager.addProduct(name, desc, price, stock);
+
+                productList.getItems().setAll(DatabaseManager.getAllProducts());
+                messageLabel.setText("Product added!");
+            } catch (Exception ex) {
+                messageLabel.setText("Invalid input");
+            }
+        });
+
+        deleteBtn.setOnAction(e -> {
+            try {
+                int id = Integer.parseInt(nameField.getText());
+
+                DatabaseManager.deleteProduct(id);
+
+                productList.getItems().setAll(DatabaseManager.getAllProducts());
+                messageLabel.setText("Product deleted!");
+            } catch (Exception ex) {
+                messageLabel.setText("Enter valid ID");
+            }
+        });
+
+        backBtn.setOnAction(e -> showDashboard());
+
+        root.getChildren().setAll(
+                title,
+                nameField,
+                descField,
+                priceField,
+                stockField,
+                addBtn,
+                deleteBtn,
+                productList,
+                messageLabel,
+                backBtn
+        );
     }
 
 }
