@@ -154,5 +154,4 @@ coverage/
 src/generated/
 
 ### Distribution ###
-.idea/
 distributions
