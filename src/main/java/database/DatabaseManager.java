@@ -112,7 +112,7 @@ public class DatabaseManager {
         return false;
     }
 
-    //USED BY PRODUCT BROWSING
+    // USED BY PRODUCT BROWSING
     public static ArrayList<Product> getAllProducts() {
         ArrayList<Product> products = new ArrayList<>();
 
@@ -155,7 +155,7 @@ public class DatabaseManager {
                 orders.add(
                         "Order #" + rs.getInt("order_id") +
                                 " | User: " + rs.getString("username") +
-                                " | database.Product ID: " + rs.getInt("product_id") +
+                                " | Product ID: " + rs.getInt("product_id") +
                                 " | Qty: " + rs.getInt("quantity") +
                                 " | Price: $" + rs.getDouble("price_at_purchase")
                 );
@@ -253,6 +253,7 @@ public class DatabaseManager {
     public static String getCurrentUser() {
         return currentUser;
     }
+
     private static void insertDefaultAdmin() {
         String query = """
             INSERT OR IGNORE INTO users (username, password, role)
