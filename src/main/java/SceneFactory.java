@@ -10,7 +10,7 @@ public class SceneFactory {
             case SIGNUP -> new SignUpController().buildScene();
             case MAIN_PAGE_USER -> new MainPageUserController().buildScene();
             case PRODUCT_BROWSE -> buildProductScene();
-            case CART -> buildCartScene();
+            case CART -> new CartController().buildScene();
             case ORDER_HISTORY -> buildOrderHistoryScene();
             case ADMIN -> buildAdminScene();
         };

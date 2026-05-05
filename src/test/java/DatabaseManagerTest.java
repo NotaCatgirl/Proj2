@@ -126,4 +126,39 @@ public class DatabaseManagerTest {
         String role = DatabaseManager.validLogin("rain","1234");
         assertEquals("user",role);
     }
+
+    // Tests for the cart
+    @Test
+    public void testGetCartItemsReturnsSeededData() {
+        DatabaseManager.initializeDatabase();
+
+        try (Connection connection = DatabaseManager.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            statement.executeUpdate(
+                    "INSERT OR IGNORE INTO users (user_id, username, password, role) "
+                            + "VALUES (999, 'cart_test_user', 'pass', 'user')");
+            statement.executeUpdate(
+                    "INSERT OR IGNORE INTO products (product_id, name, description, price, stock) "
+                            + "VALUES (999, 'Test Product', 'A test', 5.00, 10)");
+
+            statement.executeUpdate("DELETE FROM cart_item WHERE user_id = 999");
+
+            DatabaseManager.addToCart(999, 999);
+            DatabaseManager.addToCart(999, 999);
+
+            java.util.List<model.CartItem> cartItems = DatabaseManager.getCartItems(999);
+
+            assertEquals(1, cartItems.size());
+            assertEquals(2, cartItems.get(0).getQuantity());
+            assertEquals("Test Product", cartItems.get(0).getProductName());
+            assertEquals(5.00, cartItems.get(0).getProductPrice());
+            assertEquals(10.00, cartItems.get(0).getLineTotal());
+
+            statement.executeUpdate("DELETE FROM cart_item WHERE user_id = 999");
+
+        } catch (Exception exception) {
+            fail("Seed verification failed: " + exception.getMessage());
+        }
+    }
 }

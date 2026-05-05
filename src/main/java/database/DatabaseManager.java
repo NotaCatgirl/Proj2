@@ -174,6 +174,7 @@ public class DatabaseManager {
     public static void addToCart(int userId, int productId) {
         String checkQuery = "SELECT cart_item_id, quantity FROM cart_item "
                 + "WHERE user_id = ? AND product_id = ?";
+        String updateQuery = "UPDATE cart_item SET quantity = ? WHERE cart_item_id = ?";
         String insertQuery = "INSERT INTO cart_item (user_id, product_id, quantity, date_added) "
                 + "VALUES (?, ?, 1, datetime('now'))";
 
@@ -186,7 +187,11 @@ public class DatabaseManager {
             if (resultSet.next()) {
                 int existingCartItemId = resultSet.getInt("cart_item_id");
                 int existingQuantity = resultSet.getInt("quantity");
-                updateCartQuantity(existingCartItemId, existingQuantity + 1);
+                try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+                    updateStatement.setInt(1, existingQuantity + 1);
+                    updateStatement.setInt(2, existingCartItemId);
+                    updateStatement.executeUpdate();
+                }
             } else {
                 try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
                     insertStatement.setInt(1, userId);
@@ -194,8 +199,8 @@ public class DatabaseManager {
                     insertStatement.executeUpdate();
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 
