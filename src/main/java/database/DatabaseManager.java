@@ -51,47 +51,47 @@ public class DatabaseManager {
     }
 
 
-    public static String validLogin(String user, String password){
+    public static String validLogin(String user, String password) {
         String query = "SELECT role FROM users WHERE username = ? AND password = ?";
-        try(Connection con = getConnection();
-            PreparedStatement ps = con.prepareStatement(query)){
-            ps.setString(1,user);
-            ps.setString(2,password);
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, user);
+            ps.setString(2, password);
 
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getString("role");
             }
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static void signUp(String user, String password){
+    public static void signUp(String user, String password) {
         String query = "INSERT INTO users (username,password,role) VALUES (?,?,?)";
-        try (Connection con =getConnection();
-            PreparedStatement ps = con.prepareStatement(query)){
-            ps.setString(1,user);
-            ps.setString(2,password);
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, user);
+            ps.setString(2, password);
             ps.setString(3, "user");
-            ps.executeUpdate () ;
-        } catch (SQLException e){
+            ps.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static boolean userExist(String user){
+    public static boolean userExist(String user) {
         String query = "SELECT * FROM users WHERE username = ?";
         try (Connection con = getConnection();
-            PreparedStatement ps = con.prepareStatement(query)){
-            ps.setString(1,user);
+             PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, user);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return true;
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
@@ -121,6 +121,30 @@ public class DatabaseManager {
         }
 
         return orders;
+    }
+
+    public static List<String> getAllUsers() {
+        List<String> users = new ArrayList<>();
+
+        String sql = "SELECT user_id, username, role FROM users ORDER BY user_id";
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                users.add(
+                        "User ID: " + rs.getInt("user_id") +
+                                " | Username: " + rs.getString("username") +
+                                " | Role: " + rs.getString("role")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
     }
 
 }

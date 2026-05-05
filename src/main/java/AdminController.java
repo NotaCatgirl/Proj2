@@ -1,3 +1,4 @@
+import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -30,6 +31,7 @@ public class AdminController {
         Button logoutBtn = new Button("Logout");
 
         viewOrdersBtn.setOnAction(e -> showOrders());
+        manageUsersBtn.setOnAction(e -> showUsers());
 
         logoutBtn.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.LOGIN)
@@ -66,7 +68,7 @@ public class AdminController {
         searchBtn.setOnAction(e -> {
             String input = searchField.getText().toLowerCase();
 
-            List<String> allOrders = database.DatabaseManager.getAllOrders();
+            List<String> allOrders = DatabaseManager.getAllOrders();
             ordersList.getItems().clear();
 
             for (String order : allOrders) {
@@ -92,4 +94,47 @@ public class AdminController {
                 backBtn
         );
     }
+
+    private void showUsers() {
+        Label title = new Label("All Users");
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search by username or user ID");
+
+        Button searchBtn = new Button("Search");
+        Button backBtn = new Button("Back");
+
+        ListView<String> usersList = new ListView<>();
+        Label emptyLabel = new Label("No users found");
+
+        usersList.getItems().addAll(DatabaseManager.getAllUsers());
+
+        searchBtn.setOnAction(e -> {
+            String input = searchField.getText().toLowerCase();
+
+            List<String> allUsers = DatabaseManager.getAllUsers();
+            usersList.getItems().clear();
+
+            for (String user : allUsers) {
+                if (user.toLowerCase().contains(input)) {
+                    usersList.getItems().add(user);
+                }
+            }
+
+            if (usersList.getItems().isEmpty()) {
+                root.getChildren().setAll(title, searchField, searchBtn, emptyLabel, backBtn);
+            } else {
+                root.getChildren().setAll(title, searchField, searchBtn, usersList, backBtn);
+            }
+        });
+
+        backBtn.setOnAction(e -> showDashboard());
+
+        if (usersList.getItems().isEmpty()) {
+            root.getChildren().setAll(title, searchField, searchBtn, emptyLabel, backBtn);
+        } else {
+            root.getChildren().setAll(title, searchField, searchBtn, usersList, backBtn);
+        }
+    }
+
 }
