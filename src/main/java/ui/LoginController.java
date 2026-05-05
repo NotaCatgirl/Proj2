@@ -36,9 +36,11 @@ public class LoginController {
             if (role == null){
                 errorLabel.setText("Please Enter Valid Username or Password");
             }else if (role.equalsIgnoreCase("admin")){
+                DatabaseManager.setUser(username);
                 SceneManager.getInstance().navigateTo(SceneType.ADMIN);
             } else if (role.equalsIgnoreCase("user")){
-                SceneManager.getInstance().navigateTo(SceneType.PRODUCT_BROWSE);
+                DatabaseManager.setUser(username);
+                SceneManager.getInstance().navigateTo(SceneType.MAIN_PAGE_USER);
             } else {
                 errorLabel.setText("Please Enter Valid Username or Password");
             }
