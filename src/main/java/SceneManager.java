@@ -27,8 +27,7 @@ public class SceneManager {
     }
 
     public void navigateTo(SceneType type) {
-        Scene scene = cache.computeIfAbsent(type,
-                t -> SceneFactory.createScene(t));
+        Scene scene = SceneFactory.createScene(type);
         stage.setScene(scene);
     }
 
