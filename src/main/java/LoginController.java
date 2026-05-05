@@ -1,6 +1,3 @@
-package ui;
-
-import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import database.DatabaseManager;
 
 public class LoginController {
     public Scene buildScene (){

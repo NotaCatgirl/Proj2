@@ -1,9 +1,10 @@
-import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import database.DatabaseManager;
+import database.Product;
 
 import java.util.List;
 
@@ -59,12 +60,7 @@ public class AdminController {
         ListView<String> ordersList = new ListView<>();
         Label emptyLabel = new Label("No orders found");
 
-        // TEMP placeholder data (replace later with DB)
-        ordersList.getItems().addAll(
-                "User 1 - Order #101",
-                "User 2 - Order #102",
-                "User 3 - Order #103"
-        );
+        ordersList.getItems().addAll(DatabaseManager.getAllOrders());
 
         searchBtn.setOnAction(e -> {
             String input = searchField.getText().toLowerCase();
@@ -160,7 +156,7 @@ public class AdminController {
         ListView<String> productList = new ListView<>();
         Label messageLabel = new Label();
 
-        productList.getItems().addAll(DatabaseManager.getAllProducts());
+        loadProducts(productList);
 
         addBtn.setOnAction(e -> {
             try {
@@ -171,7 +167,7 @@ public class AdminController {
 
                 DatabaseManager.addProduct(name, desc, price, stock);
 
-                productList.getItems().setAll(DatabaseManager.getAllProducts());
+                loadProducts(productList);
                 messageLabel.setText("Product added!");
             } catch (Exception ex) {
                 messageLabel.setText("Invalid input");
@@ -184,7 +180,7 @@ public class AdminController {
 
                 DatabaseManager.deleteProduct(id);
 
-                productList.getItems().setAll(DatabaseManager.getAllProducts());
+                loadProducts(productList);
                 messageLabel.setText("Product deleted!");
             } catch (Exception ex) {
                 messageLabel.setText("Enter valid ID");
@@ -207,4 +203,16 @@ public class AdminController {
         );
     }
 
+    private void loadProducts(ListView<String> productList) {
+        productList.getItems().clear();
+
+        for (Product product : DatabaseManager.getAllProducts()) {
+            productList.getItems().add(
+                    "ID: " + product.getProductId()
+                            + " | " + product.getName()
+                            + " | $" + product.getPrice()
+                            + " | Stock: " + product.getStock()
+            );
+        }
+    }
 }

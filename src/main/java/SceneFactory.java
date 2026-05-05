@@ -1,5 +1,3 @@
-package ui;
-
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -10,10 +8,14 @@ public class SceneFactory {
         return switch (type) {
             case LOGIN -> new LoginController().buildScene();
             case SIGNUP -> new SignUpController().buildScene();
+            case MAIN_PAGE_USER -> new MainPageUserController().buildScene();
             case PRODUCT_BROWSE -> new ProductBrowseController().buildScene();
+            case ADMIN -> new AdminController().buildScene();
             case CART -> placeholder("Cart Scene");
             case ORDER_HISTORY -> placeholder("Order History Scene");
-            case ADMIN -> placeholder("Admin Scene");
+
+            // important safety fallback
+            default -> throw new IllegalArgumentException("Unknown SceneType: " + type);
         };
     }
 

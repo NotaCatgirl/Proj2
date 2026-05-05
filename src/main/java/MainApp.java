@@ -1,8 +1,6 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 import database.DatabaseManager;
-import ui.SceneManager;
-import ui.SceneType;
 
 public class MainApp extends Application {
 
