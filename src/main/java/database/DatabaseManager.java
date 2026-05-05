@@ -204,7 +204,6 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void setUser (String username){
