@@ -204,12 +204,14 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    public static void setUser(String username){
+
+    }
+
+    public static void setUser (String username){
         currentUser = username;
     }
 
-    public static String getCurrentUser(){
+    public static String getCurrentUser () {
         return currentUser;
     }
-
 }
