@@ -1,7 +1,5 @@
 package database;
 
-import model.Product;
-import java.util.ArrayList;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +8,6 @@ public class DatabaseManager {
 
     private static final String DB_URL = "jdbc:sqlite:ecommerce.db";
     public static String currentUser;
-
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
@@ -47,27 +44,25 @@ public class DatabaseManager {
 
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
+
             stmt.execute(createUsers);
             stmt.execute(createProducts);
             stmt.execute(createOrders);
 
-            // Noemhi added insert sample products
             insertSampleProducts();
+            insertDefaultAdmin();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-<<<<<<< HEAD
-    public static String validLogin(String user, String password){
-=======
-
     public static String validLogin(String user, String password) {
->>>>>>> main
         String query = "SELECT role FROM users WHERE username = ? AND password = ?";
+
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
+
             ps.setString(1, user);
             ps.setString(2, password);
 
@@ -79,24 +74,21 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
     public static void signUp(String user, String password) {
-        String query = "INSERT INTO users (username,password,role) VALUES (?,?,?)";
-<<<<<<< HEAD
-        try (Connection con =getConnection();
-             PreparedStatement ps = con.prepareStatement(query)){
-            ps.setString(1,user);
-            ps.setString(2,password);
-=======
+        String query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
+
             ps.setString(1, user);
             ps.setString(2, password);
->>>>>>> main
             ps.setString(3, "user");
             ps.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,25 +96,23 @@ public class DatabaseManager {
 
     public static boolean userExist(String user) {
         String query = "SELECT * FROM users WHERE username = ?";
+
         try (Connection con = getConnection();
-<<<<<<< HEAD
-             PreparedStatement ps = con.prepareStatement(query)){
-            ps.setString(1,user);
-=======
              PreparedStatement ps = con.prepareStatement(query)) {
+
             ps.setString(1, user);
->>>>>>> main
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
-            }
+
+            return rs.next();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 
-<<<<<<< HEAD
+    // USED BY PRODUCT BROWSING
     public static ArrayList<Product> getAllProducts() {
         ArrayList<Product> products = new ArrayList<>();
 
@@ -141,11 +131,21 @@ public class DatabaseManager {
                         rs.getInt("stock"),
                         rs.getString("image_path")
                 ));
-=======
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return products;
+    }
+
+    // ADMIN FEATURES
     public static List<String> getAllOrders() {
         List<String> orders = new ArrayList<>();
 
-        String sql = "SELECT o.order_id, o.user_id, u.username, o.product_id, o.quantity, o.price_at_purchase, o.order_date FROM orders o JOIN users u ON o.user_id = u.user_id ORDER BY o.order_id DESC ";
+        String sql = "SELECT o.order_id, u.username, o.product_id, o.quantity, o.price_at_purchase " +
+                "FROM orders o JOIN users u ON o.user_id = u.user_id ORDER BY o.order_id DESC";
 
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
@@ -192,50 +192,8 @@ public class DatabaseManager {
         return users;
     }
 
-    public static List<String> getAllProducts() {
-        List<String> products = new ArrayList<>();
-
-        String sql = "SELECT product_id, name, price, stock FROM products ORDER BY product_id";
-
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                products.add(
-                        "ID: " + rs.getInt("product_id") +
-                                " | " + rs.getString("name") +
-                                " | $" + rs.getDouble("price") +
-                                " | Stock: " + rs.getInt("stock")
-                );
->>>>>>> main
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return products;
-    }
-
-<<<<<<< HEAD
-    // Noemhi added sample products for browsing
-    private static void insertSampleProducts() {
-        String query = """
-                INSERT OR IGNORE INTO products (product_id, name, description, price, stock, image_path)
-                VALUES
-                (1, 'Pajama Guy', 'Pajama man with a teddy bear', 9.99, 10, '/images/pajamafigure.png'),
-                (2, 'Astronaut Guy', 'Astronaut man, who is an astronaut', 24.99, 25, '/images/astronautfigure.png'),
-                (3, 'Construction Guy', 'A Construction figure', 29.99, 15, '/images/constructionfigure.png'),
-                (4, 'Average Guy', 'Just your average Joe, nothing special about this one', 1000000.99, 12, '/images/averageguyfigure.png'),
-                (5, 'Shark Guy', 'A shark man figure', 19.99, 30, '/images/sharkfigure.png')
-                """;
-
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
-=======
     public static void addProduct(String name, String desc, double price, int stock) {
-        String sql = "INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO products (name, description, price, stock, image_path) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -244,7 +202,7 @@ public class DatabaseManager {
             ps.setString(2, desc);
             ps.setDouble(3, price);
             ps.setInt(4, stock);
->>>>>>> main
+            ps.setString(5, null);
 
             ps.executeUpdate();
 
@@ -252,8 +210,6 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-<<<<<<< HEAD
-=======
 
     public static void deleteProduct(int productId) {
         String sql = "DELETE FROM products WHERE product_id = ?";
@@ -269,13 +225,48 @@ public class DatabaseManager {
         }
     }
 
-    public static void setUser (String username){
+    private static void insertSampleProducts() {
+        String query = """
+                INSERT OR IGNORE INTO products (product_id, name, description, price, stock, image_path)
+                VALUES
+                (1, 'Pajama Guy', 'Pajama man with a teddy bear', 9.99, 10, '/images/pajamafigure.png'),
+                (2, 'Astronaut Guy', 'Astronaut man', 24.99, 25, '/images/astronautfigure.png'),
+                (3, 'Construction Guy', 'Construction figure', 29.99, 15, '/images/constructionfigure.png'),
+                (4, 'Average Guy', 'Average figure', 19.99, 12, '/images/averageguyfigure.png'),
+                (5, 'Shark Guy', 'Shark figure', 19.99, 30, '/images/sharkfigure.png')
+                """;
+
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setUser(String username) {
         currentUser = username;
     }
 
-    public static String getCurrentUser () {
+    public static String getCurrentUser() {
         return currentUser;
     }
 
->>>>>>> main
+    private static void insertDefaultAdmin() {
+        String query = """
+            INSERT OR IGNORE INTO users (username, password, role)
+            VALUES ('admin', 'admin123', 'admin')
+            """;
+
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

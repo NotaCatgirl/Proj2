@@ -1,4 +1,4 @@
-package model;
+package database;
 
 public class Product {
     private int productId;
