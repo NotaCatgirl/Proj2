@@ -213,4 +213,5 @@ public class DatabaseManager {
     public static String getCurrentUser () {
         return currentUser;
     }
+
 }
