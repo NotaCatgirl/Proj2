@@ -12,7 +12,7 @@ public class SceneFactory {
             case PRODUCT_BROWSE -> buildProductScene();
             case CART -> buildCartScene();
             case ORDER_HISTORY -> buildOrderHistoryScene();
-            case ADMIN -> buildAdminScene();
+            case ADMIN -> new AdminController().buildScene();
         };
     }
 
@@ -45,8 +45,4 @@ public class SceneFactory {
         return new Scene(root, 800, 600);
     }
 
-//
-//    public static void switchScene(SceneType type) {
-//        stage.setScene(createScene(type));
-//    }
 }
