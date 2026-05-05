@@ -1,3 +1,5 @@
+package ui;
+
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -21,7 +23,7 @@ public class SceneManager {
     public static SceneManager getInstance() {
         if (instance == null) {
             throw new IllegalStateException
-                    ("SceneManager not initialised");
+                    ("ui.SceneManager not initialised");
         }
         return instance;
     }

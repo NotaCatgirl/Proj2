@@ -1,3 +1,5 @@
+package ui;
+
 import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
