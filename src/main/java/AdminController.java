@@ -4,6 +4,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class AdminController {
 
     private VBox root;
@@ -62,20 +64,15 @@ public class AdminController {
         );
 
         searchBtn.setOnAction(e -> {
-            String input = searchField.getText();
+            String input = searchField.getText().toLowerCase();
 
+            List<String> allOrders = database.DatabaseManager.getAllOrders();
             ordersList.getItems().clear();
 
-            if (input.isEmpty()) {
-                ordersList.getItems().addAll(
-                        "User 1 - Order #101",
-                        "User 2 - Order #102",
-                        "User 3 - Order #103"
-                );
-            } else if (input.equals("1")) {
-                ordersList.getItems().add("User 1 - Order #101");
-            } else {
-                ordersList.getItems().clear();
+            for (String order : allOrders) {
+                if (order.toLowerCase().contains(input)) {
+                    ordersList.getItems().add(order);
+                }
             }
 
             if (ordersList.getItems().isEmpty()) {

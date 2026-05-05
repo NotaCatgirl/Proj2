@@ -1,6 +1,8 @@
 package database;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseManager {
 
@@ -93,6 +95,32 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static List<String> getAllOrders() {
+        List<String> orders = new ArrayList<>();
+
+        String sql = "SELECT o.order_id, o.user_id, u.username, o.product_id, o.quantity, o.price_at_purchase, o.order_date FROM orders o JOIN users u ON o.user_id = u.user_id ORDER BY o.order_id DESC ";
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                orders.add(
+                        "Order #" + rs.getInt("order_id") +
+                                " | User: " + rs.getString("username") +
+                                " | Product ID: " + rs.getInt("product_id") +
+                                " | Qty: " + rs.getInt("quantity") +
+                                " | Price: $" + rs.getDouble("price_at_purchase")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return orders;
     }
 
 }
