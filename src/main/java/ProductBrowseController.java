@@ -6,8 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import database.DatabaseManager;
 
@@ -22,9 +21,19 @@ public class ProductBrowseController {
         title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
 
         Button viewCartButton = new Button("View Cart");
-        viewCartButton.setOnAction(event -> {
-            SceneManager.getInstance().navigateTo(SceneType.CART);
-        });
+        viewCartButton.setOnAction(event ->
+                SceneManager.getInstance().navigateTo(SceneType.CART)
+        );
+
+        // ✅ NEW BACK BUTTON
+        Button backButton = new Button("Back to Main Page");
+        backButton.setOnAction(e ->
+                SceneManager.getInstance().navigateTo(SceneType.MAIN_PAGE_USER)
+        );
+
+        // ✅ Put buttons side-by-side
+        HBox buttonRow = new HBox(15, viewCartButton, backButton);
+        buttonRow.setAlignment(Pos.CENTER);
 
         TilePane productGrid = new TilePane();
         productGrid.setHgap(20);
@@ -40,7 +49,8 @@ public class ProductBrowseController {
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(550);
 
-        root.getChildren().addAll(title, viewCartButton, scrollPane);
+        // ✅ updated layout
+        root.getChildren().addAll(title, buttonRow, scrollPane);
 
         return new Scene(root, 900, 650);
     }
