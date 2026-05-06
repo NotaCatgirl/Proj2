@@ -11,7 +11,7 @@ public class SceneFactory {
             case MAIN_PAGE_USER -> new MainPageUserController().buildScene();
             case PRODUCT_BROWSE -> new ProductBrowseController().buildScene();
             case ADMIN -> new AdminController().buildScene();
-            case CART -> placeholder("Cart Scene");
+            case CART -> new CartController().buildScene();
             case ORDER_HISTORY -> placeholder("Order History Scene");
 
             // important safety fallback

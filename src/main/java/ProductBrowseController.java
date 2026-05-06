@@ -21,6 +21,11 @@ public class ProductBrowseController {
         Label title = new Label("Browse Products");
         title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
 
+        Button viewCartButton = new Button("View Cart");
+        viewCartButton.setOnAction(event -> {
+            SceneManager.getInstance().navigateTo(SceneType.CART);
+        });
+
         TilePane productGrid = new TilePane();
         productGrid.setHgap(20);
         productGrid.setVgap(20);
@@ -35,7 +40,7 @@ public class ProductBrowseController {
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(550);
 
-        root.getChildren().addAll(title, scrollPane);
+        root.getChildren().addAll(title, viewCartButton, scrollPane);
 
         return new Scene(root, 900, 650);
     }
@@ -96,6 +101,8 @@ public class ProductBrowseController {
 
         Button addToCart = new Button("Add to Cart");
         addToCart.setOnAction(e -> {
+            DatabaseManager.addToCart(DatabaseManager.getCurrentUserId(), product.getProductId());
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Cart");
             alert.setHeaderText(null);

@@ -2,6 +2,11 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import database.DatabaseManager;
 
+// Imports for the testing data
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class MainApp extends Application {
 
     @Override
