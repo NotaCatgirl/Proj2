@@ -1,103 +1,93 @@
 import database.DatabaseManager;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.CartItem;
-import javafx.scene.control.Alert;
-
-import java.util.List;
 
 public class CartController {
 
-
-
-    private VBox cartContent;
+    private ObservableList<CartItem> cartItems;
+    private SimpleDoubleProperty cartTotal;
 
     public Scene buildScene() {
+        cartItems = FXCollections.observableArrayList(
+                DatabaseManager.getCartItems(DatabaseManager.getCurrentUserId()));
+
+        cartTotal = new SimpleDoubleProperty(0);
+        recalculateTotal();
+        cartItems.addListener((ListChangeListener<CartItem>) change -> recalculateTotal());
+
         Label titleLabel = new Label("Your Cart");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        cartContent = new VBox(10);
-        cartContent.setAlignment(Pos.CENTER);
+        HBox headerRow = buildHeaderRow();
+        headerRow.visibleProperty().bind(Bindings.isNotEmpty(cartItems));
+        headerRow.managedProperty().bind(headerRow.visibleProperty());
 
-        renderCart();
+        ListView<CartItem> cartListView = new ListView<>(cartItems);
+        cartListView.setCellFactory(list -> new CartItemCell());
+        cartListView.setPrefHeight(400);
+        cartListView.setPlaceholder(buildEmptyPlaceholder());
+
+        Label totalLabel = new Label();
+        totalLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        totalLabel.textProperty().bind(cartTotal.asString("Total: $%.2f"));
+        totalLabel.visibleProperty().bind(Bindings.isNotEmpty(cartItems));
+        totalLabel.managedProperty().bind(totalLabel.visibleProperty());
+
+        Button checkoutButton = new Button("Checkout");
+        checkoutButton.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        checkoutButton.setOnAction(event -> handleCheckout());
+        checkoutButton.visibleProperty().bind(Bindings.isNotEmpty(cartItems));
+        checkoutButton.managedProperty().bind(checkoutButton.visibleProperty());
 
         Button backButton = new Button("Back");
         backButton.setOnAction(event -> {
             SceneManager.getInstance().navigateTo(SceneType.PRODUCT_BROWSE);
         });
 
-        VBox rootLayout = new VBox(15, titleLabel, cartContent, backButton);
+        VBox rootLayout = new VBox(15, titleLabel, headerRow, cartListView,
+                totalLabel, checkoutButton, backButton);
         rootLayout.setPadding(new Insets(30));
         rootLayout.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(rootLayout, 500, 600);
-        return scene;
+        return new Scene(rootLayout, 500, 600);
     }
 
-    private void renderCart() {
-        cartContent.getChildren().clear();
-        List<CartItem> cartItems = DatabaseManager.getCartItems(DatabaseManager.getCurrentUserId());
-        if (cartItems.isEmpty()) {
-            renderEmptyCart();
-        } else {
-            renderItems(cartItems);
+    private void recalculateTotal() {
+        double sum = 0;
+        for (CartItem cartItem : cartItems) {
+            sum = sum + cartItem.getLineTotal();
         }
+        cartTotal.set(sum);
     }
 
-    private void renderEmptyCart() {
-        Label emptyMessageLabel = new Label("Your cart is empty!");
-        emptyMessageLabel.setStyle("-fx-font-size: 16px;");
-
-        Button browseProductsButton = new Button("Browse Products");
-        browseProductsButton.setOnAction(event -> {
-            SceneManager.getInstance().navigateTo(SceneType.PRODUCT_BROWSE);
-        });
-
-        cartContent.getChildren().addAll(emptyMessageLabel, browseProductsButton);
+    private void reloadCartFromDatabase() {
+        cartItems.setAll(DatabaseManager.getCartItems(DatabaseManager.getCurrentUserId()));
     }
 
-    private void renderItems(List<CartItem> cartItems) {
-        HBox headerRow = buildHeaderRow();
-        cartContent.getChildren().add(headerRow);
-        cartContent.getChildren().add(new Separator());
+    private void handleCheckout() {
+        DatabaseManager.checkout(DatabaseManager.getCurrentUserId());
 
-        double cartTotal = 0;
-        for (int index = 0; index < cartItems.size(); index++) {
-            CartItem cartItem = cartItems.get(index);
-            HBox itemRow = buildItemRow(cartItem);
-            cartContent.getChildren().add(itemRow);
-            if (index < cartItems.size() - 1) {
-                cartContent.getChildren().add(new Separator());
-            }
-            cartTotal = cartTotal + cartItem.getLineTotal();
-        }
+        Alert orderAlert = new Alert(Alert.AlertType.INFORMATION);
+        orderAlert.setTitle("Order");
+        orderAlert.setHeaderText(null);
+        orderAlert.setContentText("Order placed successfully!");
+        orderAlert.showAndWait();
 
-        cartContent.getChildren().add(new Separator());
-
-        Label totalLabel = new Label(String.format("Total: $%.2f", cartTotal));
-        totalLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        cartContent.getChildren().add(totalLabel);
-
-        Button checkoutButton = new Button("Checkout");
-        checkoutButton.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
-        checkoutButton.setOnAction(event -> {
-            DatabaseManager.checkout(DatabaseManager.getCurrentUserId());
-
-            Alert orderAlert = new Alert(Alert.AlertType.INFORMATION);
-            orderAlert.setTitle("Order");
-            orderAlert.setHeaderText(null);
-            orderAlert.setContentText("Order placed successfully!");
-            orderAlert.showAndWait();
-
-            renderCart();
-        });
-        cartContent.getChildren().add(checkoutButton);
+        cartItems.clear();
     }
 
     private HBox buildHeaderRow() {
@@ -121,6 +111,33 @@ public class CartController {
         HBox header = new HBox(10, itemHeader, priceHeader, quantityHeader, subtotalHeader);
         header.setAlignment(Pos.CENTER);
         return header;
+    }
+
+    private VBox buildEmptyPlaceholder() {
+        Label emptyMessageLabel = new Label("Your cart is empty!");
+        emptyMessageLabel.setStyle("-fx-font-size: 16px;");
+
+        Button browseProductsButton = new Button("Browse Products");
+        browseProductsButton.setOnAction(event -> {
+            SceneManager.getInstance().navigateTo(SceneType.PRODUCT_BROWSE);
+        });
+
+        VBox placeholder = new VBox(10, emptyMessageLabel, browseProductsButton);
+        placeholder.setAlignment(Pos.CENTER);
+        return placeholder;
+    }
+
+    private class CartItemCell extends ListCell<CartItem> {
+        @Override
+        protected void updateItem(CartItem cartItem, boolean empty) {
+            super.updateItem(cartItem, empty);
+            if (empty || cartItem == null) {
+                setGraphic(null);
+                setText(null);
+            } else {
+                setGraphic(buildItemRow(cartItem));
+            }
+        }
     }
 
     private HBox buildItemRow(CartItem cartItem) {
@@ -149,24 +166,23 @@ public class CartController {
         minusButton.setOnAction(event -> {
             if (cartItem.getQuantity() <= 1) {
                 DatabaseManager.removeCartItem(cartItem.getCartItemId());
+                cartItems.remove(cartItem);
             } else {
                 DatabaseManager.updateCartQuantity(
-                        cartItem.getCartItemId(),
-                        cartItem.getQuantity() - 1);
+                        cartItem.getCartItemId(), cartItem.getQuantity() - 1);
+                reloadCartFromDatabase();
             }
-            renderCart();
         });
 
         plusButton.setOnAction(event -> {
             DatabaseManager.updateCartQuantity(
-                    cartItem.getCartItemId(),
-                    cartItem.getQuantity() + 1);
-            renderCart();
+                    cartItem.getCartItemId(), cartItem.getQuantity() + 1);
+            reloadCartFromDatabase();
         });
 
         removeButton.setOnAction(event -> {
             DatabaseManager.removeCartItem(cartItem.getCartItemId());
-            renderCart();
+            cartItems.remove(cartItem);
         });
 
         HBox row = new HBox(10, nameLabel, priceLabel, minusButton,
