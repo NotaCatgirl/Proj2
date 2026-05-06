@@ -25,13 +25,13 @@ public class ProductBrowseController {
                 SceneManager.getInstance().navigateTo(SceneType.CART)
         );
 
-        // ✅ NEW BACK BUTTON
+        // new back button
         Button backButton = new Button("Back to Main Page");
         backButton.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.MAIN_PAGE_USER)
         );
 
-        // ✅ Put buttons side-by-side
+        // Put buttons side-by-side
         HBox buttonRow = new HBox(15, viewCartButton, backButton);
         buttonRow.setAlignment(Pos.CENTER);
 
@@ -49,7 +49,7 @@ public class ProductBrowseController {
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(550);
 
-        // ✅ updated layout
+        // updated layout
         root.getChildren().addAll(title, buttonRow, scrollPane);
 
         return new Scene(root, 900, 650);
