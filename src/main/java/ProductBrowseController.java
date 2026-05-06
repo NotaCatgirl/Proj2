@@ -101,6 +101,15 @@ public class ProductBrowseController {
 
         Button addToCart = new Button("Add to Cart");
         addToCart.setOnAction(e -> {
+            if (product.getStock() <= 0) {
+                Alert outOfStockAlert = new Alert(Alert.AlertType.WARNING);
+                outOfStockAlert.setTitle("Out of Stock");
+                outOfStockAlert.setHeaderText(null);
+                outOfStockAlert.setContentText(product.getName() + " is currently unavailable.");
+                outOfStockAlert.showAndWait();
+                return;
+            }
+
             DatabaseManager.addToCart(DatabaseManager.getCurrentUserId(), product.getProductId());
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
