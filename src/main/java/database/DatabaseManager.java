@@ -388,4 +388,35 @@ public class DatabaseManager {
         }
     }
 
+    public static void checkout(int userId) {
+        List<CartItem> cartItems = getCartItems(userId);
+        if (cartItems.isEmpty()) {
+            return;
+        }
+
+        String insertOrderQuery = "INSERT INTO orders "
+                + "(user_id, product_id, quantity, status, order_date, price_at_purchase) "
+                + "VALUES (?, ?, ?, 'completed', datetime('now'), ?)";
+        String clearCartQuery = "DELETE FROM cart_item WHERE user_id = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement insertStatement = connection.prepareStatement(insertOrderQuery);
+             PreparedStatement clearStatement = connection.prepareStatement(clearCartQuery)) {
+
+            for (CartItem cartItem : cartItems) {
+                insertStatement.setInt(1, userId);
+                insertStatement.setInt(2, cartItem.getProductId());
+                insertStatement.setInt(3, cartItem.getQuantity());
+                insertStatement.setDouble(4, cartItem.getProductPrice());
+                insertStatement.executeUpdate();
+            }
+
+            clearStatement.setInt(1, userId);
+            clearStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
