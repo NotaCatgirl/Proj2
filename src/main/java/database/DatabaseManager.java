@@ -245,7 +245,7 @@ public class DatabaseManager {
                 (1, 'Pajama Guy', 'Pajama man with a teddy bear', 9.99, 10, '/images/pajamafigure.png'),
                 (2, 'Astronaut Guy', 'Astronaut man', 24.99, 25, '/images/astronautfigure.png'),
                 (3, 'Construction Guy', 'Construction figure', 29.99, 15, '/images/constructionfigure.png'),
-                (4, 'Average Guy', 'Average figure', 19.99, 12, '/images/averageguyfigure.png'),
+                (4, 'Average Guy', 'Average figure', 100000000.99, 12, '/images/averageguyfigure.png'),
                 (5, 'Shark Guy', 'Shark figure', 19.99, 30, '/images/sharkfigure.png')
                 """;
 
