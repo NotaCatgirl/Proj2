@@ -36,6 +36,7 @@ public class SignUpController {
                 DatabaseManager.signUp(username,password);
                 errorLabel.setText("Success!");
             }
+            SceneManager.getInstance().navigateTo(SceneType.LOGIN);
         });
 
         backButton.setOnAction(e ->{
