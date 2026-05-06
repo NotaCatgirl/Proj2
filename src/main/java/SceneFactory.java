@@ -12,7 +12,7 @@ public class SceneFactory {
             case PRODUCT_BROWSE -> new ProductBrowseController().buildScene();
             case ADMIN -> new AdminController().buildScene();
             case CART -> new CartController().buildScene();
-            case ORDER_HISTORY -> placeholder("Order History Scene");
+            case ORDER_HISTORY -> new OrderHistoryController().buildScene();
 
             // important safety fallback
             default -> throw new IllegalArgumentException("Unknown SceneType: " + type);
