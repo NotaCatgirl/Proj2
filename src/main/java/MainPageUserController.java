@@ -37,7 +37,7 @@ public class MainPageUserController {
                         "-fx-font-size: 18"
         );
 
-        // ✅ Navigation
+        // Navigation
         browseProducts.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.PRODUCT_BROWSE)
         );
