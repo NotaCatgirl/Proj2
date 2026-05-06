@@ -1,1 +1,2 @@
 rootProject.name = 'Proj2'
+include 'src:main:resources'

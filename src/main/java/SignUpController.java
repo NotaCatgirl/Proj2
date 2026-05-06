@@ -1,4 +1,3 @@
-import database.DatabaseManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import database.DatabaseManager;
 
 public class SignUpController {
     public Scene buildScene(){
@@ -36,6 +36,7 @@ public class SignUpController {
                 DatabaseManager.signUp(username,password);
                 errorLabel.setText("Success!");
             }
+            SceneManager.getInstance().navigateTo(SceneType.LOGIN);
         });
 
         backButton.setOnAction(e ->{

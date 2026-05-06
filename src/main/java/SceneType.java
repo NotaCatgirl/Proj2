@@ -5,5 +5,5 @@ public enum SceneType {
     PRODUCT_BROWSE,
     CART,
     ORDER_HISTORY,
-    ADMIN,
+    ADMIN
 }

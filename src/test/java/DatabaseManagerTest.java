@@ -121,7 +121,7 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testLogin (){
+    public void testValidLogin (){
         DatabaseManager.signUp("rain","1234");
         String role = DatabaseManager.validLogin("rain","1234");
         assertEquals("user",role);
@@ -160,5 +160,11 @@ public class DatabaseManagerTest {
         } catch (Exception exception) {
             fail("Seed verification failed: " + exception.getMessage());
         }
+    }
+
+    @Test
+    public void testInvalidLogin(){
+        String role = DatabaseManager.validLogin("Fake","test");
+        assertEquals(null,role);
     }
 }
