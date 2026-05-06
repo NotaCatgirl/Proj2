@@ -8,6 +8,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.CartItem;
+import javafx.scene.control.Alert;
 
 import java.util.List;
 
@@ -82,6 +83,21 @@ public class CartController {
         Label totalLabel = new Label(String.format("Total: $%.2f", cartTotal));
         totalLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         cartContent.getChildren().add(totalLabel);
+
+        Button checkoutButton = new Button("Checkout");
+        checkoutButton.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        checkoutButton.setOnAction(event -> {
+            DatabaseManager.checkout(DatabaseManager.getCurrentUserId());
+
+            Alert orderAlert = new Alert(Alert.AlertType.INFORMATION);
+            orderAlert.setTitle("Order");
+            orderAlert.setHeaderText(null);
+            orderAlert.setContentText("Order placed successfully!");
+            orderAlert.showAndWait();
+
+            renderCart();
+        });
+        cartContent.getChildren().add(checkoutButton);
     }
 
     private HBox buildHeaderRow() {

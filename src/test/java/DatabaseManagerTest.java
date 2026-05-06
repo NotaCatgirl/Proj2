@@ -163,6 +163,50 @@ public class DatabaseManagerTest {
     }
 
     @Test
+    public void testCheckoutMovesCartToOrdersAndClearsCart() {
+        DatabaseManager.initializeDatabase();
+
+        try (Connection connection = DatabaseManager.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            statement.executeUpdate(
+                    "INSERT OR IGNORE INTO users (user_id, username, password, role) "
+                            + "VALUES (888, 'checkout_test_user', 'pass', 'user')");
+            statement.executeUpdate(
+                    "INSERT OR IGNORE INTO products (product_id, name, description, price, stock) "
+                            + "VALUES (888, 'Checkout Product', 'A test', 7.00, 10)");
+
+            statement.executeUpdate("DELETE FROM cart_item WHERE user_id = 888");
+            statement.executeUpdate("DELETE FROM orders WHERE user_id = 888");
+
+            DatabaseManager.addToCart(888, 888);
+            DatabaseManager.addToCart(888, 888);
+            DatabaseManager.addToCart(888, 888);
+
+            DatabaseManager.checkout(888);
+
+            java.util.List<model.CartItem> cartItemsAfter = DatabaseManager.getCartItems(888);
+            assertEquals(0, cartItemsAfter.size());
+
+            try (PreparedStatement orderQuery = connection.prepareStatement(
+                    "SELECT product_id, quantity, price_at_purchase FROM orders WHERE user_id = ?")) {
+                orderQuery.setInt(1, 888);
+                ResultSet orderResults = orderQuery.executeQuery();
+                assertTrue(orderResults.next());
+                assertEquals(888, orderResults.getInt("product_id"));
+                assertEquals(3, orderResults.getInt("quantity"));
+                assertEquals(7.00, orderResults.getDouble("price_at_purchase"));
+                assertFalse(orderResults.next());
+            }
+
+            statement.executeUpdate("DELETE FROM orders WHERE user_id = 888");
+
+        } catch (Exception exception) {
+            fail("Checkout test failed: " + exception.getMessage());
+        }
+    }
+
+    @Test
     public void testInvalidLogin(){
         String role = DatabaseManager.validLogin("Fake","test");
         assertEquals(null,role);
