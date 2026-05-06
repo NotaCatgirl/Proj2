@@ -283,6 +283,25 @@ public class DatabaseManager {
         return currentUser;
     }
 
+    public static int getCurrentUserId() {
+        if (currentUser == null) {
+            return 1;
+        }
+        String query = "SELECT user_id FROM users WHERE username = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, currentUser);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
     public static List<CartItem> getCartItems(int userId) {
         List<CartItem> cartItems = new ArrayList<>();
         String query = "SELECT cart_item.cart_item_id, products.product_id, "

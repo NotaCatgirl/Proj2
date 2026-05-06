@@ -13,8 +13,7 @@ import java.util.List;
 
 public class CartController {
 
-    // TODO: Replace with logged-in user ID once session tracking is in place.
-    private static final int currentUserId = 1;
+
 
     private VBox cartContent;
 
@@ -42,8 +41,7 @@ public class CartController {
 
     private void renderCart() {
         cartContent.getChildren().clear();
-        List<CartItem> cartItems = DatabaseManager.getCartItems(currentUserId);
-
+        List<CartItem> cartItems = DatabaseManager.getCartItems(DatabaseManager.getCurrentUserId());
         if (cartItems.isEmpty()) {
             renderEmptyCart();
         } else {
